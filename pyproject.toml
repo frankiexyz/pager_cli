@@ -36,6 +36,10 @@ minilog = "^2.0"
 strictyaml = "^1.4.4"
 tabulate = "^0.8.9"
 requests-mock = "^1.9.3"
+types-setuptools = "^57.0.0"
+types-requests = "^2.25.0"
+requests = "^2.25.1"
+types-tabulate = "^0.1.1"
 
 [tool.poetry.dev-dependencies]
 
