@@ -1,0 +1,19 @@
+site_name: pager_cli
+site_description: pagerduty cli to list/ack/resolve incidents
+site_author: Frankie
+
+repo_url: https://github.com/frankiexyz/pager_cli
+edit_uri: https://github.com/frankiexyz/pager_cli/edit/main/docs
+
+theme: readthedocs
+
+markdown_extensions:
+  - codehilite
+
+nav:
+  - Home: index.md
+  - Advanced: advanced.md
+  - About:
+    - Release Notes: about/changelog.md
+    - Contributing: about/contributing.md
+    - License: about/license.md
