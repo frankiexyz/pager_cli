@@ -3,10 +3,10 @@
 """Tests for `pager_cli` package."""
 
 import pytest
-
 from click.testing import CliRunner
-from pager_cli import cli
 from requests import HTTPError
+
+from pager_cli import cli
 
 
 URL = "https://api.pagerduty.com/incidents"
@@ -58,6 +58,8 @@ def test_fetch_open_incidents_list(requests_mock):
             'url': 'https://www.pagerduty.com/incidents/P9TETKK',
         }
     ]
+
+
 def test_fetch_open_incidents_resolve(requests_mock):
     output = '{"incidents": [{"incident_number": 365456, "title": "Customer Call", "description": "Customer Call", "created_at": "2021-06-01T08:47:04Z", "status": "acknowledged", "incident_key": null, "id": "P9TETKK", "html_url": "https://www.pagerduty.com/incidents/P9TETKK"}]}'
     user_id = 'random-id'
@@ -79,10 +81,12 @@ def test_fetch_open_incidents_resolve(requests_mock):
         "authorization": f"Token token={api_key}",
     }
 
-#    requests_mock.register_uri('PUT', URL, text=output)
+    #    requests_mock.register_uri('PUT', URL, text=output)
     requests_mock.put(URL, headers=headers, text=output)
     resp = cli.change_incident(user_id, api_key, "ack")
     assert resp == True
+
+
 def test_fetch_open_incidents_ack(requests_mock):
     output = '{"incidents": [{"incident_number": 365456, "title": "Customer Call", "description": "Customer Call", "created_at": "2021-06-01T08:47:04Z", "status": "resolved", "incident_key": null, "id": "P9TETKK", "html_url": "https://www.pagerduty.com/incidents/P9TETKK"}]}'
     user_id = 'random-id'
@@ -104,7 +108,7 @@ def test_fetch_open_incidents_ack(requests_mock):
         "authorization": f"Token token={api_key}",
     }
 
-#    requests_mock.register_uri('PUT', URL, text=output)
+    #    requests_mock.register_uri('PUT', URL, text=output)
     requests_mock.put(URL, headers=headers, text=output)
     resp = cli.change_incident(user_id, api_key, "resolve")
     assert resp == True

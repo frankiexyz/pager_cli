@@ -1,13 +1,15 @@
 """Console script for pager_cli."""
 import sys
-import click
-import requests
 import webbrowser
 from pathlib import Path
-import strictyaml
-from strictyaml import load, Map, Str
-from tabulate import tabulate
 from typing import Dict
+
+import click
+import requests
+import strictyaml
+from strictyaml import Map, Str, load
+from tabulate import tabulate
+
 
 URL = "https://api.pagerduty.com/incidents"
 
