@@ -2,10 +2,6 @@
 
 """Tests for `pager_cli` package."""
 
-import pytest
-from click.testing import CliRunner
-from requests import HTTPError
-
 from pager_cli import cli
 
 
@@ -15,7 +11,10 @@ URL = "https://api.pagerduty.com/incidents"
 def test_fetch_open_incidents_empty(requests_mock):
     user_id = 'random-id'
     api_key = 'random-key'
-    url = f"{URL}?total=false&time_zone=UTC&statuses%5B%5D=triggered&statuses%5B%5D=acknowledged&user_ids%5B%5D={user_id}"
+    url = (
+        f"{URL}?total=false&time_zone=UTC&statuses%5B%5D=triggered&statuses"
+        f"%5B%5D=acknowledged&user_ids%5B%5D={user_id}"
+    )
     requests_mock.get(
         url,
         headers={"authorization": f"Token token={api_key}"},
@@ -42,7 +41,10 @@ def test_fetch_open_incidents_list(requests_mock):
     }
     user_id = 'random-id'
     api_key = 'random-key'
-    url = f"{URL}?total=false&time_zone=UTC&statuses%5B%5D=triggered&statuses%5B%5D=acknowledged&user_ids%5B%5D={user_id}"
+    url = (
+        f"{URL}?total=false&time_zone=UTC&statuses%5B%5D=triggered&statuses"
+        f"%5B%5D=acknowledged&user_ids%5B%5D={user_id}"
+    )
     requests_mock.get(
         url,
         headers={"authorization": f"Token token={api_key}"},
@@ -64,15 +66,6 @@ def test_fetch_open_incidents_resolve(requests_mock):
     output = '{"incidents": [{"incident_number": 365456, "title": "Customer Call", "description": "Customer Call", "created_at": "2021-06-01T08:47:04Z", "status": "acknowledged", "incident_key": null, "id": "P9TETKK", "html_url": "https://www.pagerduty.com/incidents/P9TETKK"}]}'
     user_id = 'random-id'
     api_key = 'random-key'
-    querystring = {
-        "incidents": [
-            {
-                "id": 'dummy',
-                "type": "incident_reference",
-                "status": 'acknowledged',
-            },
-        ]
-    }
 
     headers = {
         "accept": "application/vnd.pagerduty+json;version=2",
@@ -91,15 +84,6 @@ def test_fetch_open_incidents_ack(requests_mock):
     output = '{"incidents": [{"incident_number": 365456, "title": "Customer Call", "description": "Customer Call", "created_at": "2021-06-01T08:47:04Z", "status": "resolved", "incident_key": null, "id": "P9TETKK", "html_url": "https://www.pagerduty.com/incidents/P9TETKK"}]}'
     user_id = 'random-id'
     api_key = 'random-key'
-    querystring = {
-        "incidents": [
-            {
-                "id": 'dummy',
-                "type": "incident_reference",
-                "status": 'resolved',
-            },
-        ]
-    }
 
     headers = {
         "accept": "application/vnd.pagerduty+json;version=2",

@@ -7,7 +7,7 @@ from typing import Dict
 import click
 import requests
 import strictyaml
-from strictyaml import Map, Str, load
+from strictyaml import Map, Str, YAMLValidationError, load
 from tabulate import tabulate
 
 
@@ -44,8 +44,11 @@ def fetch_config() -> strictyaml.representation.YAML:
         schema = Map({"userid": Str(), "apikey": Str()})
         config_raw = open(f"{Path.home()}/.pager_cli").read()
         config = load(config_raw, schema)
-    except Exception as e:
-        print(f"Error {repr(e)}")
+    except YAMLValidationError as e:
+        print(f"Configration file error: {repr(e)}")
+        return None
+    except FileNotFoundError as e:
+        print(f"File not found: {repr(e)}")
         return None
     return config
 
@@ -75,10 +78,9 @@ def change_incident(incident: str, apikey: str, action: str) -> bool:
     response = requests.put(URL, headers=headers, json=querystring).json()
     if action == "resolve" and response["incidents"][0]["status"] == "resolved":
         return True
-    elif action == "ack" and response["incidents"][0]["status"] == "acknowledged":
+    if action == "ack" and response["incidents"][0]["status"] == "acknowledged":
         return True
-    else:
-        return False
+    return False
 
 
 def execute(action: str):

@@ -3,7 +3,7 @@
 """Package entry point."""
 
 
-from pager_cli.gui import main
+from pager_cli.cli import main
 
 
 if __name__ == '__main__':  # pragma: no cover
