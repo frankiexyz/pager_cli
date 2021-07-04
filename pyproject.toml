@@ -1,7 +1,7 @@
 [tool.poetry]
 
 name = "pager_cli"
-version = "0.0"
+version = "0.1"
 description = "pagerduty cli to list/ack/resolve incidents"
 
 license = "MIT"
@@ -40,6 +40,7 @@ types-setuptools = "^57.0.0"
 types-requests = "^2.25.0"
 requests = "^2.25.1"
 types-tabulate = "^0.1.1"
+yaspin = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 

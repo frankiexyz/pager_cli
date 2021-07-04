@@ -39,3 +39,19 @@ cat ~/.pager_cli -p
 userid: YOUR_USER_ID(eg:PBZDORP)
 apikey: YOUR_API_KEY
 ```
+
+List and ACK the incident
+```bash
+ # pager_cli --help
+ Usage: pager_cli [OPTIONS]
+
+   Console script for pager_cli.
+
+   Options:
+   --action TEXT  Action list/ack/resolve
+   --config TEXT  config file default:~/.pager_cli
+   --help         Show this message and exit.
+ # pager_cli
+ ⠸ Loading...
+ 🦾 No active incident
+```

@@ -9,11 +9,13 @@ import requests
 import strictyaml
 from strictyaml import Map, Str, YAMLValidationError, load
 from tabulate import tabulate
+from yaspin import yaspin
 
 
 URL = "https://api.pagerduty.com/incidents"
 
 
+@yaspin(text="Loading...")
 def fetch_open_incidents(userid: str, apikey: str) -> list[Dict[str, str]]:
     url = (
         f"{URL}?total=false&time_zone=UTC&statuses%5B%5D"
@@ -24,7 +26,7 @@ def fetch_open_incidents(userid: str, apikey: str) -> list[Dict[str, str]]:
     ).json()
     output: list[Dict[str, str]] = []
     if not pageroutput.get("incidents", False):
-        print("\U0001F9BE No active incident")
+        print("\n\U0001F9BE No active incident")
         return output
     for i in pageroutput["incidents"]:
         output.append(
@@ -39,10 +41,10 @@ def fetch_open_incidents(userid: str, apikey: str) -> list[Dict[str, str]]:
     return output
 
 
-def fetch_config() -> strictyaml.representation.YAML:
+def fetch_config(config_path: str) -> strictyaml.representation.YAML:
     try:
         schema = Map({"userid": Str(), "apikey": Str()})
-        config_raw = open(f"{Path.home()}/.pager_cli").read()
+        config_raw = open(config_path).read()
         config = load(config_raw, schema)
     except YAMLValidationError as e:
         print(f"Configration file error: {repr(e)}")
@@ -53,6 +55,7 @@ def fetch_config() -> strictyaml.representation.YAML:
     return config
 
 
+@yaspin(text="Loading...")
 def change_incident(incident: str, apikey: str, action: str) -> bool:
     if action == "ack":
         status = "acknowledged"
@@ -83,8 +86,8 @@ def change_incident(incident: str, apikey: str, action: str) -> bool:
     return False
 
 
-def execute(action: str):
-    config = fetch_config()
+def execute(action: str, conf_path: str):
+    config = fetch_config(conf_path)
     if config is None:
         print("Unable to load config")
         sys.exit(1)
@@ -96,6 +99,8 @@ def execute(action: str):
         list_incidents = fetch_open_incidents(userid, apikey)
         print(tabulate(list_incidents))
         for i in list_incidents:
+            if i['status'] != 'acknowledged':
+                continue
             print(f"\U0001F3C3 trying to resolve {i['id']}...")
             if change_incident(i["id"], apikey, "resolve"):
                 print(f"\U0001F44C resolved {i['id']}...")
@@ -105,6 +110,8 @@ def execute(action: str):
         list_incidents = fetch_open_incidents(userid, apikey)
         print(tabulate(list_incidents))
         for i in list_incidents:
+            if i['status'] != 'triggered':
+                continue
             print(f"\U0001F3C3 trying to ack {i['id']}...")
             if change_incident(i["id"], apikey, "ack"):
                 print(f"\U0001F44C ack {i['id']}...")
@@ -115,10 +122,15 @@ def execute(action: str):
 
 
 @click.command()
-@click.option("--action", default="list", help="Action list/ack/resolve")
-def main(action):
+@click.option("--action", default="ack", help="Action list/ack/resolve")
+@click.option(
+    "--config",
+    default=f"{Path.home()}/.pager_cli",
+    help="config file default:~/.pager_cli",
+)
+def main(action, config):
     """Console script for pager_cli."""
-    execute(action)
+    execute(action, config)
     return 0
 
 
