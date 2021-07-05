@@ -1,7 +1,7 @@
 [tool.poetry]
 
 name = "pager_cli"
-version = "0.1"
+version = "0.2"
 description = "pagerduty cli to list/ack/resolve incidents"
 
 license = "MIT"
