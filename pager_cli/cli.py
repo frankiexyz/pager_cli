@@ -2,7 +2,7 @@
 import sys
 import webbrowser
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 import click
 import requests
@@ -16,7 +16,7 @@ URL = "https://api.pagerduty.com/incidents"
 
 
 @yaspin(text="Loading...")
-def fetch_open_incidents(userid: str, apikey: str) -> list[Dict[str, str]]:
+def fetch_open_incidents(userid: str, apikey: str) -> List[Dict[str, str]]:
     url = (
         f"{URL}?total=false&time_zone=UTC&statuses%5B%5D"
         f"=triggered&statuses%5B%5D=acknowledged&user_ids%5B%5D={userid}"
@@ -24,7 +24,7 @@ def fetch_open_incidents(userid: str, apikey: str) -> list[Dict[str, str]]:
     pageroutput = requests.get(
         url, headers={"authorization": f"Token token={apikey}"}
     ).json()
-    output: list[Dict[str, str]] = []
+    output: List[Dict[str, str]] = []
     if not pageroutput.get("incidents", False):
         print("\n\U0001F9BE No active incident")
         return output
